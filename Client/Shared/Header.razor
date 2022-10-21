@@ -1,0 +1,56 @@
+﻿
+@inject NavigationManager UriHelper
+
+<header>
+  <!-- Fixed navbar -->
+  <nav class="navbar navbar-expand-md fixed-top navbar-light" style="background-color: #e3f2fd;">
+    <NavLink class="navbar-brand" href="">Blazor SPA</NavLink>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+            Home
+          </NavLink>
+        </li>
+        <li class="nav-item">
+          <NavLink class="nav-link" href="counter">
+            Counter
+          </NavLink>
+        </li>
+        <li class="nav-item">
+          <NavLink class="nav-link" href="fetchdata">
+            Fetch data
+          </NavLink>
+        </li>
+        <li class="nav-item">
+          <NavLink class="nav-link" href="orders">
+            Orders
+          </NavLink>
+        </li>
+      </ul>
+      <form class="form-inline mt-2 mt-md-0" method="get" action="/orders" @onsubmit="OnSearch" @onsubmit:preventDefault>
+        <div class="input-group">
+          <input class="form-control" type="text" name="query" placeholder="Search Orders" aria-label="Search" @bind="Query">
+          <div class="input-group-append">
+            <button class="btn btn-primary" type="submit">
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </nav>
+</header>
+
+@code {
+  public string Query { get; set; }
+  public void OnSearch()
+  {
+    string currentUrl = UriHelper.Uri.Substring(UriHelper.BaseUri.Length-1);
+    bool forceLoad = currentUrl.StartsWith("/orders");
+    UriHelper.NavigateTo("/orders?query=" + Uri.EscapeUriString(Query ?? ""), forceLoad);
+  }
+}

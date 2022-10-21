@@ -1,0 +1,104 @@
+﻿@page "/orders"
+@page "/order/{Id:int}"
+
+@inherits BlazorSPA.Client.Pages.OrdersModel
+@namespace BlazorSPA.Client.Pages
+
+<div class="container">
+  <h1>Orders</h1>
+
+  @if (Loading)
+  {
+    <div id="loader">
+      <div class="mb-0">
+        Loading orders ...
+      </div>
+    </div>
+  }
+  else
+  {
+    <div class="row">
+      <div class="col">
+        <h3>Order List</h3>
+        <div hidden="@string.IsNullOrEmpty(Query)">
+          Search filter: <span class="badge badge-pill badge-primary" @onclick="OnClearQuery">@Query</span>
+        </div>
+        <button class="btn btn-outline-secondary" @onclick="OnNewOrder"><i class="fas fa-plus"></i></button>
+        @if (Orders == null || Orders.Count < 1)
+        {
+          <p>No orders yet.</p>
+        }
+        else
+        {
+          <table class="table responsive-table">
+            <thead>
+              <tr>
+                <th>&nbsp;</th>
+                <th>Id</th>
+                <th>Description</th>
+                <th>Quantity</th>
+                <th>&nbsp;</th>
+              </tr>
+            </thead>
+            <tbody>
+              @foreach (var order in Orders)
+              {
+                <tr>
+                  <td>
+                    <a href="/order/@order.Id" @onclick:preventDefault @onclick="() => OnLoadOrder(order.Id)">
+                      <i class="fas fa-pencil-alt"></i>
+                    </a>
+                  </td>
+                  <td data-title="Id">@order.Id</td>
+                  <td data-title="Description">@order.Description</td>
+                  <td data-title="Quantity">@order.Quantity</td>
+                  <td>
+                    <button class="btn btn-danger" @onclick:preventDefault @onclick="() => OnDeleteOrder(order.Id)">
+                      <i class="fas fa-times"></i>
+                    </button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        }
+      </div>
+
+      <div class="col">
+        <h3>@PageTitle</h3>
+        <EditForm Model="@Editing" OnValidSubmit="@OnSubmitForm">
+          <DataAnnotationsValidator />
+          <Validations Mode="ValidationMode.Auto" Model="@Editing">
+            <div class="form-group">
+              <label>Description:</label>
+              <Validation>
+                <TextEdit class="form-control" @bind-Text="Editing.Description">
+                  <Feedback>
+                    <ValidationError />
+                  </Feedback>
+                </TextEdit>
+              </Validation>
+              <div hidden="@string.IsNullOrEmpty(DescriptionError)" class="alert alert-danger" role="alert">@DescriptionError</div>
+            </div>
+            <div class="form-group">
+              <label>Quantity:</label>
+              <Validation>
+                <NumericEdit class="form-control" @bind-Value="Editing.Quantity">
+                  <Feedback>
+                    <ValidationError />
+                  </Feedback>
+                </NumericEdit>
+              </Validation>
+              <div hidden="@string.IsNullOrEmpty(QuantityError)" class="alert alert-danger" role="alert">@QuantityError</div>
+            </div>
+            <div class="input-group">
+              <button type="submit" class="btn btn-primary">Save</button>
+              <div hidden="@string.IsNullOrEmpty(SaveError)" class="alert alert-danger" role="alert">@SaveError</div>
+            </div>
+          </Validations>
+        </EditForm>
+      </div>
+
+    </div>
+  }
+</div>

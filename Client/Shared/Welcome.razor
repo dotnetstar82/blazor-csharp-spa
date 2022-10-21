@@ -1,0 +1,12 @@
+﻿<div class="alert alert-secondary mt-4" role="alert">
+
+  <i class="fas fa-glass-cheers"></i>
+  <strong>@Title</strong>
+  <p class="mb-0">Welcome to Blazor. We're glad you're here.</p>
+</div>
+
+@code {
+  // Demonstrates how a parent component can supply parameters
+  [Parameter]
+  public string Title { get; set; }
+}
